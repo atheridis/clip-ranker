@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from manager.views import get_name
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', TemplateView.as_view(template_name="manager/index.html")),
+    path('input/', get_name, name="input"),
 ]

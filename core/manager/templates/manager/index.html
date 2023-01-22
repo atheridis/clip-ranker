@@ -3,9 +3,9 @@
 <header id="heading">
     {% if user.is_authenticated %}
     <h1>Please Input Clip Link</h1>
-    <br />
-    <form>
-        <input type="text">
+    <form action="{% url 'input' %}" method="post">
+        {% csrf_token %}
+        <input id="clip" type="text" name="clip">
         <button>Submit Clip</button>
     </form>
     {% else %}
