@@ -1,6 +1,6 @@
 import requests
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from .request_clip import request_clip
@@ -15,7 +15,7 @@ def get_name(request):
         # check whether it's valid:
         if form.is_valid():
             try:
-                request_clip(form.cleaned_data.get("clip"))
+                request_clip(user=request.user, clip=form.cleaned_data["clip"])
             except Exception as e:
                 print(e)
                 return HttpResponse(b"<h1>NOPE</h1>")
@@ -24,9 +24,11 @@ def get_name(request):
             # redirect to a new URL:
             return HttpResponse(b"<h1>THANKS</h1>")
             # return HttpResponseRedirect("/thanks/")
+        else:
+            print("invalid")
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ClipForm()
 
-    return render(request, "name.html", {"form": form})
+    return render(request, "manager/index.html", {"form": form})

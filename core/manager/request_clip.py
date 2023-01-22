@@ -2,10 +2,11 @@ import requests
 from .models import Clip
 from urllib.parse import urlparse
 from allauth.socialaccount.models import SocialApp, SocialToken
+from django.contrib.auth.models import User
 
 
-def request_clip(url: str):
-    id = urlparse(url).path.split("/")[-1]
+def request_clip(user, clip: str):
+    id = urlparse(clip).path.split("/")[-1]
 
     social_app: SocialApp = SocialApp.objects.first()
     oauth = SocialToken.objects.first().token
@@ -41,6 +42,7 @@ def request_clip(url: str):
         thumbnail_url=data["thumbnail_url"],
         duration=data["duration"],
         vod_offset=data["vod_offset"],
+        account=User.objects.get(id=user.id),
     ).save()
 
     return
