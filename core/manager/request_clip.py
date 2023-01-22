@@ -1,5 +1,7 @@
 import requests
-from .models import Clip
+import datetime
+from .errors import TooManyClips
+from .models import Clip, ResetData
 from urllib.parse import urlparse
 from allauth.socialaccount.models import SocialApp, SocialToken
 from django.contrib.auth.models import User
@@ -7,6 +9,20 @@ from django.contrib.auth.models import User
 
 def request_clip(user, clip: str):
     id = urlparse(clip).path.split("/")[-1]
+    user = User.objects.get(id=user.id)
+    reset_data = ResetData.objects.first()
+    reset_time = reset_data.date_time
+    max_clips = reset_data.max_clips
+
+    if (
+        len(
+            Clip.objects.filter(account=user).filter(
+                date_added__gt=reset_time
+            )
+        )
+        >= max_clips
+    ):
+        raise TooManyClips
 
     social_app: SocialApp = SocialApp.objects.first()
     oauth = SocialToken.objects.first().token
@@ -26,7 +42,7 @@ def request_clip(user, clip: str):
 
     data = r.json()["data"][0]
     print(data)
-    Clip(
+    clip = Clip(
         id=data["id"],
         url=data["url"],
         embed_url=data["embed_url"],
@@ -42,7 +58,10 @@ def request_clip(user, clip: str):
         thumbnail_url=data["thumbnail_url"],
         duration=data["duration"],
         vod_offset=data["vod_offset"],
-        account=User.objects.get(id=user.id),
-    ).save()
+        date_added=datetime.datetime.now(),
+        account=user,
+    )
+    clip.validate_unique()
+    clip.save()
 
     return
