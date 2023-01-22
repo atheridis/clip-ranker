@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<header id="heading">
+    {% if user.is_authenticated %}
+    <h1>Please Input Clip Link</h1>
+    <br />
+    <form>
+        <input type="text">
+        <button>Submit Clip</button>
+    </form>
+    {% else %}
+    <h1>Welcome Friend, please log in</h1>
+    {% endif %}
+</div>
+{% endblock %}

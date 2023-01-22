@@ -1,0 +1,80 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #333;
+    color: #eee;
+}
+
+#heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+/* Style the side navigation */
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+}
+
+
+/* CSS */
+button.btn {
+    background-color: #111;
+    border-style: none;
+    color: white;
+    cursor: pointer;
+    font-family: "Arial", "Helvetica", "sans-serif";
+    font-size: 16px;
+    padding: 16px;
+    position: absolute;
+    text-align: left;
+}
+
+button.btn:hover,
+button.btn:focus {
+    background-color: #ddd;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+    display: block;
+
+}
+
+
+
+a.btn {
+    color: white;
+    padding: 16px;
+    text-decoration: none;
+    display: block;
+}
+a:hover.btn {
+    background-color: #ddd;
+    color: black;
+}
+
+.btn-bot {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+}
+
+/* Style the content */
+.content {
+    margin-left: 200px;
+    padding-left: 20px;
+}
+
