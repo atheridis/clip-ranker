@@ -1,12 +1,42 @@
-import requests
-
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .request_clip import request_clip
-from .forms import ClipForm
+from .forms import ClipForm, RankForm
 from .errors import TooManyClips
+from .models import Clip, ResetData
+
+
+@staff_member_required
+def show_clips(request, id):
+    reset_data = ResetData.objects.first()
+    reset_time = reset_data.date_time
+    try:
+        video = Clip.objects.filter(date_added__gt=reset_time)[id - 1]
+    except IndexError:
+        print("hi")
+        return redirect(final_ranking)
+    if request.method == "POST":
+        form = RankForm(request.POST)
+        if form.is_valid():
+            print(f"post: {id} | {form.cleaned_data['value']}")
+            video.rank = form.cleaned_data["value"]
+            video.save()
+            return redirect(show_clips, id=id + 1)
+    return render(request, "manager/clip_viewer.html", context={
+        "video": video,
+    })
+
+
+@staff_member_required
+def final_ranking(request):
+    reset_data = ResetData.objects.first()
+    reset_time = reset_data.date_time
+    return render(request, "manager/final.html", context={
+        "videos": Clip.objects.filter(date_added__gt=reset_time),
+    })
 
 
 def get_name(request):

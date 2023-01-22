@@ -25,3 +25,4 @@ class Clip(models.Model):
     vod_offset = models.IntegerField(null=True)
     date_added = models.DateTimeField(null=True)
     account = models.ForeignKey(User, on_delete=models.CASCADE)
+    rank = models.IntegerField(null=True)
