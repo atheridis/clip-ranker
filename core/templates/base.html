@@ -15,11 +15,14 @@
     <body>
         <div class="sidenav">
             <a class="btn" href="{% url 'index' %}">Home</a>
-            {% if user.is_authenticated %}
+            {% if user.is_superuser %}
             <a class="btn" href="{% url 'show' 1 %}">Rank</a>
             {% endif %}
             {% if user.is_superuser %}
                 <a class="btn" href="{% url 'admin:index' %}">Admin</a>
+            {% endif %}
+            {% if user.is_superuser %}
+            <a class="btn" href="{% url 'final' %}">Results</a>
             {% endif %}
             {% if user.is_authenticated %}
                 <form action="{% url 'account_logout' %}" method="post">

@@ -50,9 +50,12 @@ button.btn:focus {
     padding: 16px;
     text-decoration: none;
     display: block;
-
 }
 
+button.btn:active {
+    background-color: #222;
+    color: #eee;
+}
 
 
 a.btn {
@@ -65,6 +68,11 @@ a:hover.btn {
     background-color: #ddd;
     color: black;
 }
+a:active.btn {
+    background-color: #222;
+    color: #eee;
+}
+
 
 .btn-bot {
     position: absolute;
@@ -124,5 +132,11 @@ a:hover.btn {
 
 .rank-btn:hover {
     background-color: #EEEEEE;
+}
+
+
+.rank-btn:active {
+    background-color: #111111;
+    color: #DDD;
 }
 
