@@ -146,8 +146,7 @@ SITE_ID = 1
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     "twitch": {
-        "SCOPE": [
-        ],
+        "SCOPE": [],
     },
 }
 AUTHENTICATION_BACKENDS = [

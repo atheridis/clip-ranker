@@ -20,13 +20,23 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from .request_clip import request_clip
 from .forms import ClipForm, RankForm
-from .errors import TooManyClipsError, TooLateError, ChannelNotAllowedError, UserNotCreatedClipError, ClipTooOldError
+from .errors import (
+    TooManyClipsError,
+    TooLateError,
+    ChannelNotAllowedError,
+    UserNotCreatedClipError,
+    ClipTooOldError,
+    BadRequestError,
+    UnauthorizedError,
+    NotFoundError,
+)
 from .models import Clip, ResetData
+import traceback
 
 
 @staff_member_required
 def show_clips(request, id):
-    reset_data = ResetData.objects.latest('date_time')
+    reset_data = ResetData.objects.latest("date_time")
     reset_time = reset_data.date_time
     try:
         video = Clip.objects.filter(
@@ -40,20 +50,28 @@ def show_clips(request, id):
             video.rank = form.cleaned_data["value"]
             video.save()
             return redirect(show_clips, id=id + 1)
-    return render(request, "manager/clip_viewer.html", context={
-        "video": video,
-        "ranks": range(reset_data.ranks, 0, -1),
-    })
+    return render(
+        request,
+        "manager/clip_viewer.html",
+        context={
+            "video": video,
+            "ranks": range(reset_data.ranks, 0, -1),
+        },
+    )
 
 
 @staff_member_required
 def final_ranking(request):
-    reset_data = ResetData.objects.latest('date_time')
+    reset_data = ResetData.objects.latest("date_time")
     reset_time = reset_data.date_time
-    return render(request, "manager/final.html", context={
-        "videos": Clip.objects.filter(date_added__gt=reset_time),
-        "ranks": range(reset_data.ranks, 0, -1),
-    })
+    return render(
+        request,
+        "manager/final.html",
+        context={
+            "videos": Clip.objects.filter(date_added__gt=reset_time),
+            "ranks": range(reset_data.ranks, 0, -1),
+        },
+    )
 
 
 def get_name(request):
@@ -77,6 +95,12 @@ def get_name(request):
                 message = "Sorry, you need to be the one who has created the clip."
             except ClipTooOldError:
                 message = "Sorry, the clip is too old. Please send a newer clip."
+            except BadRequestError:
+                message = "Sorry, a bad request happened on our side."
+            except UnauthorizedError:
+                message = "We couldn't connect to twitch servers. Try logging out and logging back in."
+            except NotFoundError:
+                message = "Sorry, we couldn't find that twitch clip. Make sure to check the url."
             except Exception:
                 message = "Something went wrong."
             else:

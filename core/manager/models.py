@@ -33,7 +33,10 @@ class AllowedChannel(models.Model):
     reset_data = models.ForeignKey(ResetData, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('broadcaster_id', 'reset_data',)
+        unique_together = (
+            "broadcaster_id",
+            "reset_data",
+        )
 
 
 class Clip(models.Model):

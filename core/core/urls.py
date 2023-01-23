@@ -21,9 +21,9 @@ from manager.views import get_name, show_clips, final_ranking
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('accounts/', include('allauth.urls')),
-    path('', TemplateView.as_view(template_name="manager/index.html"), name='index'),
-    path('input/', get_name, name="input"),
-    path('show/<int:id>', show_clips, name="show"),
-    path('final', final_ranking, name="final"),
+    path("accounts/", include("allauth.urls")),
+    path("", TemplateView.as_view(template_name="manager/index.html"), name="index"),
+    path("input/", get_name, name="input"),
+    path("show/<int:id>", show_clips, name="show"),
+    path("final", final_ranking, name="final"),
 ]
