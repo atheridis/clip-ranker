@@ -17,7 +17,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from django.contrib import admin
 
 # Register your models here.
-from .models import Clip, ResetData
+from .models import Clip, ResetData, AllowedChannel
+
+
+class AllowedChannelInline(admin.TabularInline):
+    model = AllowedChannel
+
+
+class ResetDataAdmin(admin.ModelAdmin):
+    inlines = [
+        AllowedChannelInline,
+    ]
+
 
 admin.site.register(Clip)
-admin.site.register(ResetData)
+admin.site.register(ResetData, ResetDataAdmin)

@@ -14,14 +14,26 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
 
 class ResetData(models.Model):
     date_time = models.DateTimeField()
+    end_date_time = models.DateTimeField(default=datetime.utcfromtimestamp(2147483640))
     max_clips = models.IntegerField(default=2)
     ranks = models.IntegerField(default=5)
+    user_created_clip = models.BooleanField(default=True)
+    clip_newer_than = models.DateTimeField(default=datetime.utcfromtimestamp(1))
+
+
+class AllowedChannel(models.Model):
+    broadcaster_id = models.CharField(max_length=100)
+    reset_data = models.ForeignKey(ResetData, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('broadcaster_id', 'reset_data',)
 
 
 class Clip(models.Model):

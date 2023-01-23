@@ -1,10 +1,10 @@
 - Clips should only be accepted under certain conditions layed out in the database.
--- Clip for channels
--- Clip needs to be created within a timeframe
--- Clip needs to be created by user adding the clip
+-- Allow admin site to add username instead of broadcaster id in ResetData
 
 - Implement Clip categories
 
 - Display clip info more clearly
 -- Who uploaded the clip
 -- Clip comments
+
+- Refresh tokens

@@ -16,10 +16,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import requests
 import datetime
-from .errors import TooManyClips
+import pytz
+from .errors import TooManyClipsError, TooLateError, ChannelNotAllowedError, UserNotCreatedClipError, ClipTooOldError
 from .models import Clip, ResetData
 from urllib.parse import urlparse
-from allauth.socialaccount.models import SocialApp, SocialToken
+from allauth.socialaccount.models import SocialApp, SocialToken, SocialAccount
 from django.contrib.auth.models import User
 
 
@@ -28,8 +29,10 @@ def request_clip(user, clip: str):
     user = User.objects.get(id=user.id)
     reset_data = ResetData.objects.latest('date_time')
     reset_time = reset_data.date_time
-    print(reset_time)
     max_clips = reset_data.max_clips
+
+    if reset_data.end_date_time < datetime.datetime.now(pytz.utc):
+        raise TooLateError
 
     if (
         len(
@@ -39,7 +42,7 @@ def request_clip(user, clip: str):
         )
         >= max_clips
     ):
-        raise TooManyClips
+        raise TooManyClipsError
 
     social_app: SocialApp = SocialApp.objects.first()
     oauth = SocialToken.objects.first().token
@@ -58,7 +61,22 @@ def request_clip(user, clip: str):
         raise Exception
 
     data = r.json()["data"][0]
-    print(data)
+
+    if reset_data.user_created_clip:
+        if not SocialAccount.objects.get(user=user).uid == data["creator_id"]:
+            raise UserNotCreatedClipError
+
+    if reset_data.allowedchannel_set.count() != 0:
+        allowed_channels = reset_data.allowedchannel_set.filter(broadcaster_id=data["broadcaster_id"])
+        if not allowed_channels.exists():
+            raise ChannelNotAllowedError
+
+    if (
+            reset_data.clip_newer_than
+            > datetime.datetime.strptime(data["created_at"], "%Y-%m-%dT%H:%M:%S%z")
+    ):
+        raise ClipTooOldError
+
     clip = Clip(
         id=data["id"],
         url=data["url"],
@@ -75,7 +93,7 @@ def request_clip(user, clip: str):
         thumbnail_url=data["thumbnail_url"],
         duration=data["duration"],
         vod_offset=data["vod_offset"],
-        date_added=datetime.datetime.now(),
+        date_added=datetime.datetime.now(pytz.utc),
         account=user,
     )
     clip.validate_unique()

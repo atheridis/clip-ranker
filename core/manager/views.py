@@ -20,7 +20,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from .request_clip import request_clip
 from .forms import ClipForm, RankForm
-from .errors import TooManyClips
+from .errors import TooManyClipsError, TooLateError, ChannelNotAllowedError, UserNotCreatedClipError, ClipTooOldError
 from .models import Clip, ResetData
 
 
@@ -28,16 +28,15 @@ from .models import Clip, ResetData
 def show_clips(request, id):
     reset_data = ResetData.objects.latest('date_time')
     reset_time = reset_data.date_time
-    print(reset_time)
     try:
-        video = Clip.objects.filter(date_added__gt=reset_time)[id - 1]
+        video = Clip.objects.filter(
+            date_added__gt=reset_time
+        ).order_by("date_added")[id - 1]
     except IndexError:
-        print("hi")
         return redirect(final_ranking)
     if request.method == "POST":
         form = RankForm(request.POST)
         if form.is_valid():
-            print(f"post: {id} | {form.cleaned_data['value']}")
             video.rank = form.cleaned_data["value"]
             video.save()
             return redirect(show_clips, id=id + 1)
@@ -51,7 +50,6 @@ def show_clips(request, id):
 def final_ranking(request):
     reset_data = ResetData.objects.latest('date_time')
     reset_time = reset_data.date_time
-    print(reset_time)
     return render(request, "manager/final.html", context={
         "videos": Clip.objects.filter(date_added__gt=reset_time),
         "ranks": range(reset_data.ranks, 0, -1),
@@ -69,24 +67,21 @@ def get_name(request):
                 request_clip(user=request.user, clip=form.cleaned_data["clip"])
             except ValidationError:
                 message = "Sorry, clip already exists. Please send another clip."
-                return render(request, "manager/index.html", {"message": message})
-                # return HttpResponse(b"<h1>Clip already exists</h1>")
-            except TooManyClips:
+            except TooManyClipsError:
                 message = "Sorry, you have already reached the clip limit."
-                return render(request, "manager/index.html", {"message": message})
-                # return HttpResponse(b"<h1>You have submitted the maximum number of clips</h1>")
+            except TooLateError:
+                message = "Sorry, the deadline for posting has passed"
+            except ChannelNotAllowedError:
+                message = "Sorry, you're not allowed to send a clip from that channel."
+            except UserNotCreatedClipError:
+                message = "Sorry, you need to be the one who has created the clip."
+            except ClipTooOldError:
+                message = "Sorry, the clip is too old. Please send a newer clip."
             except Exception:
                 message = "Something went wrong."
-                return render(request, "manager/index.html", {"message": message})
-                # return HttpResponse(b"<h1>NOPE</h1>")
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            message = "Thank you for submitting a clip."
+            else:
+                message = "Thank you for submitting a clip."
             return render(request, "manager/index.html", {"message": message})
-            # return HttpResponseRedirect("/thanks/")
-        else:
-            print("invalid")
 
     # if a GET (or any other method) we'll create a blank form
     else:
