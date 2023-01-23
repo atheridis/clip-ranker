@@ -5,16 +5,15 @@
             src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
             height="600"
             width="1000"
+            preload="auto"
             allowfullscreen>
     </iframe>
     <div id="buttons">
     <form method="post">
         {% csrf_token %}
-        <button class="rank-btn r5" name="value" value="5">Rank 5</button>
-        <button class="rank-btn r4" name="value" value="4">Rank 4</button>
-        <button class="rank-btn r3" name="value" value="3">Rank 3</button>
-        <button class="rank-btn r2" name="value" value="2">Rank 2</button>
-        <button class="rank-btn r1" name="value" value="1">Rank 1</button>
+        {% for i in ranks %}
+        <button class="rank-btn r{{ i }}" name="value" value="{{ i }}">Rank {{ i }}</button>
+        {% endfor %}
     </form>
     </div>
 </div>

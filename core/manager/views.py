@@ -11,8 +11,9 @@ from .models import Clip, ResetData
 
 @staff_member_required
 def show_clips(request, id):
-    reset_data = ResetData.objects.first()
+    reset_data = ResetData.objects.latest('date_time')
     reset_time = reset_data.date_time
+    print(reset_time)
     try:
         video = Clip.objects.filter(date_added__gt=reset_time)[id - 1]
     except IndexError:
@@ -27,15 +28,18 @@ def show_clips(request, id):
             return redirect(show_clips, id=id + 1)
     return render(request, "manager/clip_viewer.html", context={
         "video": video,
+        "ranks": range(reset_data.ranks, 0, -1),
     })
 
 
 @staff_member_required
 def final_ranking(request):
-    reset_data = ResetData.objects.first()
+    reset_data = ResetData.objects.latest('date_time')
     reset_time = reset_data.date_time
+    print(reset_time)
     return render(request, "manager/final.html", context={
         "videos": Clip.objects.filter(date_added__gt=reset_time),
+        "ranks": range(reset_data.ranks, 0, -1),
     })
 
 
@@ -48,18 +52,23 @@ def get_name(request):
         if form.is_valid():
             try:
                 request_clip(user=request.user, clip=form.cleaned_data["clip"])
-            except ValidationError as e:
-                print(e)
-                return HttpResponse(b"<h1>Clip already exists</h1>")
+            except ValidationError:
+                message = "Sorry, clip already exists. Please send another clip."
+                return render(request, "manager/index.html", {"message": message})
+                # return HttpResponse(b"<h1>Clip already exists</h1>")
             except TooManyClips:
-                return HttpResponse(b"<h1>You have submitted the maximum number of clips</h1>")
-            except Exception as e:
-                print(e)
-                return HttpResponse(b"<h1>NOPE</h1>")
+                message = "Sorry, you have already reached the clip limit."
+                return render(request, "manager/index.html", {"message": message})
+                # return HttpResponse(b"<h1>You have submitted the maximum number of clips</h1>")
+            except Exception:
+                message = "Something went wrong."
+                return render(request, "manager/index.html", {"message": message})
+                # return HttpResponse(b"<h1>NOPE</h1>")
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponse(b"<h1>THANKS</h1>")
+            message = "Thank you for submitting a clip."
+            return render(request, "manager/index.html", {"message": message})
             # return HttpResponseRedirect("/thanks/")
         else:
             print("invalid")

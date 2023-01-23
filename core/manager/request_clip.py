@@ -10,8 +10,9 @@ from django.contrib.auth.models import User
 def request_clip(user, clip: str):
     id = urlparse(clip).path.split("/")[-1]
     user = User.objects.get(id=user.id)
-    reset_data = ResetData.objects.first()
+    reset_data = ResetData.objects.latest('date_time')
     reset_time = reset_data.date_time
+    print(reset_time)
     max_clips = reset_data.max_clips
 
     if (

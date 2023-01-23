@@ -1,81 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 <table id="final-ranks">
+    {% for i in ranks %}
     <tr>
-        <th>Rank 5</th>
+        <th>Rank {{ i }}</th>
         {% for video in videos %}
-        {% if video.rank == 5 %}
+        {% if video.rank == i %}
         <td>
             <iframe
                     src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
                     height="180"
                     width="320"
+                    preload="none"
                     allowfullscreen>
             </iframe>
         </td>
         {% endif %}
         {% endfor %}
     </tr>
-    <tr>
-        <th>Rank 4</th>
-        {% for video in videos %}
-        {% if video.rank == 4 %}
-        <td>
-            <iframe
-                    src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
-                    height="180"
-                    width="320"
-                    allowfullscreen>
-            </iframe>
-        </td>
-        {% endif %}
-        {% endfor %}
-    </tr>
-    <tr>
-        <th>Rank 3</th>
-        {% for video in videos %}
-        {% if video.rank == 3 %}
-        <td>
-            <iframe
-                    src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
-                    height="180"
-                    width="320"
-                    allowfullscreen>
-            </iframe>
-        </td>
-        {% endif %}
-        {% endfor %}
-    </tr>
-    <tr>
-        <th>Rank 2</th>
-        {% for video in videos %}
-        {% if video.rank == 2 %}
-        <td>
-            <iframe
-                    src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
-                    height="180"
-                    width="320"
-                    allowfullscreen>
-            </iframe>
-        </td>
-        {% endif %}
-        {% endfor %}
-    </tr>
-    <tr>
-        <th>Rank 1</th>
-        {% for video in videos %}
-        {% if video.rank == 1 %}
-        <td>
-            <iframe
-                    src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
-                    height="180"
-                    width="320"
-                    allowfullscreen>
-            </iframe>
-        </td>
-        {% endif %}
-        {% endfor %}
-    </tr>
+    {% endfor %}
 </table>
 {% endblock %}
 

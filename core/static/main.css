@@ -97,6 +97,13 @@ a:active.btn {
 
 #buttons {
     padding-top: 2rem;
+    width: 1000px;
+}
+
+#buttons form {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 .rank-btn {
@@ -110,33 +117,45 @@ a:active.btn {
     cursor: pointer;
 }
 
+.rank-btn.r8 {
+    background-color: #9BED72;
+}
+
+.rank-btn.r7 {
+    background-color: #72ED73;
+}
+
+.rank-btn.r6 {
+    background-color: #72ED9D;
+}
+
 .rank-btn.r5 {
-    background-color: #4CAF50;
+    background-color: #72EDC8;
 }
 
 .rank-btn.r4 {
-    background-color: #8CAF50;
+    background-color: #72E8ED;
 }
 
 .rank-btn.r3 {
-    background-color: #FCAF50;
+    background-color: #72BEED;
 }
 
 .rank-btn.r2 {
-    background-color: #FFAFF0;
+    background-color: #7294ED;
 }
 
 .rank-btn.r1 {
-    background-color: #FC0F50;
+    background-color: #7A72ED;
 }
 
 .rank-btn:hover {
-    background-color: #EEEEEE;
+    background-color: #EAFCFA;
 }
 
 
 .rank-btn:active {
-    background-color: #111111;
+    background-color: #84EEE0;
     color: #DDD;
 }
 

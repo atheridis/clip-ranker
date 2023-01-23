@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class ResetData(models.Model):
     date_time = models.DateTimeField()
     max_clips = models.IntegerField(default=2)
+    ranks = models.IntegerField(default=5)
 
 
 class Clip(models.Model):
