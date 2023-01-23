@@ -1,0 +1,10 @@
+- Clips should only be accepted under certain conditions layed out in the database.
+-- Clip for channels
+-- Clip needs to be created within a timeframe
+-- Clip needs to be created by user adding the clip
+
+- Implement Clip categories
+
+- Display clip info more clearly
+-- Who uploaded the clip
+-- Clip comments
