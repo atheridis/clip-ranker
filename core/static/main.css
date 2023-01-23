@@ -159,3 +159,12 @@ a:active.btn {
     color: #DDD;
 }
 
+#final-ranks {
+    padding-top: 3em;
+}
+
+#final-ranks p.name {
+    margin-top: 0;
+    display: flex;
+    justify-content: center;
+}

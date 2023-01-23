@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <div id="group">
+    <h1>uploaded by: {{ video.account.username }}</h1>
     <iframe
             src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
             height="600"
             width="1000"
-            preload="auto"
+            preload="none"
             allowfullscreen>
     </iframe>
     <div id="buttons">

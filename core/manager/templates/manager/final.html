@@ -9,11 +9,12 @@
         <td>
             <iframe
                     src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
-                    height="180"
-                    width="320"
+                    height="135"
+                    width="240"
                     preload="none"
                     allowfullscreen>
             </iframe>
+            <p class="name">{{ video.account.username }}</p>
         </td>
         {% endif %}
         {% endfor %}
