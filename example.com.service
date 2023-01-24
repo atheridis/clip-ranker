@@ -1,0 +1,15 @@
+[Unit]
+Description=example.com gunicorn daemon
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/example.com/
+EnvironmentFile=/usr/local/etc/gunicorn/example.com.env
+StandardOutput=file:/var/log/gunicorn/example.com.log
+StandardError=file:/var/log/gunicorn/example.com.log
+ExecStart=gunicorn3 --access-logfile - --workers 3 --bind unix:/var/run/gunicorn/example.com.sock core.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

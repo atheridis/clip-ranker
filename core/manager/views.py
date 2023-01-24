@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.sites.models import Site
 
 from .request_clip import request_clip
 from .forms import ClipForm, RankForm
@@ -31,7 +32,6 @@ from .errors import (
     NotFoundError,
 )
 from .models import Clip, ResetData
-import traceback
 
 
 @staff_member_required
@@ -39,9 +39,9 @@ def show_clips(request, id):
     reset_data = ResetData.objects.latest("date_time")
     reset_time = reset_data.date_time
     try:
-        video = Clip.objects.filter(
-            date_added__gt=reset_time
-        ).order_by("date_added")[id - 1]
+        video = Clip.objects.filter(date_added__gt=reset_time).order_by("date_added")[
+            id - 1
+        ]
     except IndexError:
         return redirect(final_ranking)
     if request.method == "POST":
@@ -56,6 +56,7 @@ def show_clips(request, id):
         context={
             "video": video,
             "ranks": range(reset_data.ranks, 0, -1),
+            "sites": Site.objects.all(),
         },
     )
 
@@ -70,6 +71,7 @@ def final_ranking(request):
         context={
             "videos": Clip.objects.filter(date_added__gt=reset_time),
             "ranks": range(reset_data.ranks, 0, -1),
+            "sites": Site.objects.all(),
         },
     )
 

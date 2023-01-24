@@ -1,0 +1,65 @@
+How to deploy on Debian 11
+==========================
+
+
+Dependencies:
+==========================
+Python
+--------------------------
+python3
+
+Django
+--------------------------
+python3-django
+python3-django-allauth
+python3-psycopg2
+python3-whitenoise
+libjs-jquery
+
+Serving
+--------------------------
+gunicorn
+nginx
+
+SSL
+--------------------------
+certbot
+python3-certbot-nginx
+
+Postgres
+--------------------------
+postgresql
+postgresql-contrib
+
+
+Installation Instructions:
+==========================
+ 1. Install the necessary dependencies
+ 2. Create the directories; change example.com to your domain
+    a. /var/log/gunicorn/
+    b. /var/run/gunicorn/
+    c. /var/www/example.com/
+    d. /usr/local/etc/gunicorn/
+ 3. Copy example.com.service to /etc/systemd/system/ and change the name to your domain
+ 4. Edit the values of example.com.service by changing example.com to your domain
+ 5. Copy example.com.env to /usr/local/etc/gunicorn/ and change the name to your domain
+ 6. Edit the values of example.com.env
+    a. Generate a secret key by running generate_random_key.sh
+ 7. Change the user and group ownership of (2.abd) directories to www-data recursively
+ 8. In postgres create a user with a password and a database owned by the user
+ 9. Export your environment variables and inside core, run `python3 manage.py migrate`
+10. Inside core, run `python3 manage.py createsuperuser`
+11. Inside core, run `python3 manage.py collectstatic`
+12. Copy the contents of core/ into /var/www/example.com/
+13. Copy example.com.nginx to /etc/nginx/sites-available/ and change the name
+14. Edit the file example.com.nginx replacing example.com with your domain
+15. Run certbot to verify your domain
+16. Enable gunicorn `systemctl enable --now example.com.service`
+17. Enable nginx `systemctl enable --now example.com.service`
+
+
+Finalising Deployment:
+==========================
+1. Log into the admin panel of your website and edit / create site values in "Sites"
+2. Create a Social Application.
+3. Create a ResetData object.

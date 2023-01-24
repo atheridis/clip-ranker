@@ -8,7 +8,7 @@
         {% if video.rank == i %}
         <td>
             <iframe
-                    src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
+                    src="https://clips.twitch.tv/embed?clip={{ video.id }}{% for site in sites %}&parent={{ site.domain }}{% endfor %}"
                     height="135"
                     width="240"
                     preload="none"

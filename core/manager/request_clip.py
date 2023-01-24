@@ -127,9 +127,8 @@ def request_clip(user, clip: str):
         if not allowed_channels.exists():
             raise ChannelNotAllowedError
 
-    if (
-            reset_data.clip_newer_than
-            > datetime.datetime.strptime(data["created_at"], "%Y-%m-%dT%H:%M:%S%z")
+    if reset_data.clip_newer_than > datetime.datetime.strptime(
+        data["created_at"], "%Y-%m-%dT%H:%M:%S%z"
     ):
         raise ClipTooOldError
 

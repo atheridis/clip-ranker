@@ -1,0 +1,17 @@
+server {
+    server_name example.com www.example.com;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/var/run/gunicorn/example.com.sock;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    location /static/ {
+        alias /var/www/example.com/staticfiles/;
+    }
+}

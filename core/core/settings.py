@@ -20,19 +20,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-!nzce=4gwub(n+!6@lh^vjl+m(*ibo42&gav2kvr@d4!$3ausi"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("CLIP_RANKER_DEBUG", "") != "False"
 
 if DEBUG:
     import dotenv
 
     dotenv.load_dotenv()
 
-ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = os.getenv("CLIP_RANKER_ALLOWED_HOSTS", "").split(";")
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv(
+    "CLIP_RANKER_SECRET_KEY", "04t8gx%o4!^1ae_@%3r@vb^=lx^r$%u*5&+88568$s%w)u1b@f"
+)
 
 # Application definition
 
@@ -62,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -92,11 +96,14 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("CLIP_RANKER_DB_NAME"),
+        "USER": os.getenv("CLIP_RANKER_DB_USER"),
+        "PASSWORD": os.getenv("CLIP_RANKER_DB_PASS"),
+        "HOST": os.getenv("CLIP_RANKER_DB_HOST"),
+        "PORT": os.getenv("CLIP_RANKER_DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -132,8 +139,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

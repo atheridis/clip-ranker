@@ -3,7 +3,7 @@
 <div id="group">
     <h1>uploaded by: {{ video.account.username }}</h1>
     <iframe
-            src="https://clips.twitch.tv/embed?clip={{ video.id }}&parent=localhost"
+            src="https://clips.twitch.tv/embed?clip={{ video.id }}{% for site in sites %}&parent={{ site.domain }}{% endfor %}"
             height="600"
             width="1000"
             preload="none"
